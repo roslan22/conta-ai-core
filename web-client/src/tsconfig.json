@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "outDir": "../dist",
+    "lib": ["ES2019", "DOM"],
+    "types": ["node"],
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {
+      "@foundation": ["foundation/index.ts"],
+      "@store": ["store/index.ts"],
+      "@api": ["api/index.ts"],
+      "@components": ["components/index.ts"],
+      "@pages": ["pages/index.ts"],
+      "@constants": ["constants/index.ts"],
+      "@localization": ["localization/index.ts"]
+    },
+    "composite": true
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "node_modules"]
+}
