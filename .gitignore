@@ -1,0 +1,5 @@
+server/src/__pycache__/
+server/src/db/__pycache__/
+server/src/preprocessing/__pycache__/
+server/src/services/__pycache__/
+server/src/services/__pycache__/
