@@ -6,8 +6,8 @@ python-docx == 0.8.10
 peewee == 3.14.4
 dependency_injector===4.5.4
 pyyaml == 5.4.1
-#psycopg2-binary
-psycopg2===2.8.6
+psycopg2-binary
+# psycopg2===2.8.6
 pymysql===0.10.1
 
 #torch==1.7.0+cpu 
