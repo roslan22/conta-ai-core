@@ -1,1 +1,0 @@
-export { ApplicationTheme } from './Theme';

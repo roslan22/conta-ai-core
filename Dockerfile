@@ -37,34 +37,37 @@ ENV CUDNN_INSTALL_PATH=/usr/local/cuda
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPT/lib64
 
-RUN mkdir -p /conta/src
-WORKDIR /conta/src 
+RUN mkdir -p /core
+#WORKDIR /core 
 
 ## Latest conda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-RUN bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /conta/miniconda3
-ENV PATH=/conta/miniconda3/bin:$PATH
+RUN bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /core/miniconda3
+ENV PATH=/core/miniconda3/bin:$PATH
 RUN conda update -n base -c defaults conda
 
 #RUN conda init bash
-RUN eval "$(/conta/miniconda3/bin/conda shell.bash hook)"
+RUN eval "$(/core/miniconda3/bin/conda shell.bash hook)"
 
 ## Create the python 3.9.4 conda environment we'll use (mltt does not support higher version)
 RUN conda create --name python39
 RUN conda install -n python39 -y python=3.9.4
 
 ## Install conda installable 3rd party packages
-COPY requirements-conda.txt /conta/src
-RUN conda install -n python39 -y --file /conta/src/requirements-conda.txt -c conda -c pytorch -c conda-forge
+COPY requirements-conda.txt /core
+RUN conda install -n python39 -y --file /core/requirements-conda.txt -c conda -c pytorch -c conda-forge
 
 ## Get our pip requirements files
-COPY requirements-pip.txt /conta/src
+COPY requirements-pip.txt /core
 
-## We now change the PATH setting so python and pip will be picked up from the 'python39’' environment without
+## We now change the PATH setting so python and pip will be picked up from the 'python39ï¿½' environment without
 ## activating that environment. This is for our convenience so we don't have to manually activate. 
-ENV PATH=/conta/miniconda3/envs/python39/bin:$PATH
+ENV PATH=/core/miniconda3/envs/python39/bin:$PATH
 
-RUN pip3 install -r /conta/src/requirements-pip.txt --upgrade --no-cache-dir -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install -r /core/requirements-pip.txt --upgrade --no-cache-dir -f https://download.pytorch.org/whl/torch_stable.html
+
+COPY data /core/data/
+
 
 ## SSH login fix; otherwise user is kicked off after login:
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd

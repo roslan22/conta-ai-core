@@ -1,6 +1,0 @@
-db:
-  host: "127.0.0.1"
-  user: "root"
-  password: "vN?-ll{PTq#A"
-  database: "contchow_db"
-  port: 3306
