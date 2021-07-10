@@ -4,7 +4,7 @@
 
 2. pip install -r requirements.txt
 
-3. export FLASK_APP=server/src/app.py
+3. export FLASK_APP=/core/src/app.py
 
    export FLASK_ENV=development
    

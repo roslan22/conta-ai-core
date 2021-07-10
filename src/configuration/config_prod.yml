@@ -1,6 +1,7 @@
 db:
-  host: "0.0.0.0"
+  #host: "172.20.0.1"
+  host: "host.docker.internal"
   user: "root"
-  password: "vN?-ll{PTq#A"
-  database: "contchow_db"
-  port: 3306
+  password: "root"
+  database: "contchow_db_test"
+  port: 3308

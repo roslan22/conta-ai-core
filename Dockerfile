@@ -5,27 +5,19 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ## Install apt packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	tzdata \
-    ca-certificates \
     cmake \
     sudo \
     wget \
     curl \
-    graphviz \
     # awscli help
     groff \
     jq \
     less \
-    tree \
     ssh \
     openssh-server \
     vim \
     tmux \
-    screen \
-    xterm \
-    git \
-    # Nvidia cuda profiler:
-    libcupti-dev && \
+    git && \
     # do cleanup
     rm -rf /var/lib/apt/lists/*
 

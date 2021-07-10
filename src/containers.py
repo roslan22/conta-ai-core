@@ -30,6 +30,7 @@ class Container(containers.DeclarativeContainer):
         port=config.db.port()
     )
 
+    print("DB service was loaded")
     #user_service
 
     #contract_service
