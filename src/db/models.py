@@ -21,10 +21,18 @@ class User(BaseModel):
 class Contract(BaseModel):
     id = AutoField()
     uuid = UUIDField()
+    name = CharField(max_length=200)
+    description = CharField(max_length=400)
     user = ForeignKeyField(User, backref='contracts')
     filename = CharField(max_length=200)
     date_created = DateTimeField(default=datetime.datetime.now)
+    date_modified = DateTimeField(default=datetime.datetime.now)
     is_template = BooleanField(default=False)
+    negative_sentence_amount = IntegerField(default=0)
+    neutral_sentence_amount = IntegerField(default=0)
+    positive_sentence_amount = IntegerField(default=0)
+    status = CharField(max_length=50) # IN_PROGRESS|DONE|TODO
+    # TODO connect it to team id<->id    
 
 def paragraph_style_default():
     return {"bold": False, "underline": False, 
