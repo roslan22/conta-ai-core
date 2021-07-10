@@ -7,7 +7,8 @@ def create_new_user(username, password, email, is_real=True):
     print("Creating new user")
     user_uuid = uuid.uuid4()
     user = User(username=username, password=password, 
-                email=email, is_real=is_real, uuid=user_uuid)
+                email=email, is_real=is_real, uuid=user_uuid,
+                first_name='vasya', last_name='pupkin', photo='https://i.pravatar.cc/300?u=13241424214144')
     user.save() # user is now stored in the database
     return user 
 

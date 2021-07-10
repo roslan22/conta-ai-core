@@ -12,11 +12,14 @@ class BaseModel(Model):
 class User(BaseModel):
     id = AutoField()
     username = CharField()
+    first_name = CharField()
+    last_name = CharField()
     uuid = UUIDField()
     password = CharField()
     email = CharField()
     date_created = DateTimeField(default=datetime.datetime.now)
     is_real=BooleanField(default=True)
+    photo = CharField() # 'https://i.pravatar.cc/300?u=13241424214144'
 
 class Contract(BaseModel):
     id = AutoField()

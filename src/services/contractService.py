@@ -26,7 +26,11 @@ def get_contract(contract_uuid):
 def save_contract(user_id, filename, is_template):
     contract_uuid = uuid.uuid4()
     contract = Contract(user_id=user_id, filename=filename, 
-               is_template=is_template, uuid=contract_uuid)
+               is_template=is_template, uuid=contract_uuid,  
+               negative_sentence_amount=2, neutral_sentence_amount=10, 
+               positive_sentence_amount=5, 
+               status='IN_PROGRESS',
+               name=filename,)
 
     contract.save()
 
@@ -45,7 +49,12 @@ def get_contracts(user_id):
         Contract.filename, 
         Contract.uuid, 
         Contract.id,
-        Contract.is_template).where(Contract.user_id == user_id)
+        Contract.is_template,
+        Contract.negative_sentence_amount,
+        Contract.neutral_sentence_amount,
+        Contract.positive_sentence_amount,
+        Contract.status,
+        Contract.name).where(Contract.user_id == user_id)
         
     return list(contracts)
 
