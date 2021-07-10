@@ -1,3 +1,6 @@
+import nltk
+nltk.download('punkt')
+
 from containers import Container 
 import unittest
 import db
