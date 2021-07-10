@@ -13,7 +13,7 @@ def create_new_user(username, password, email, is_real=True):
     return user 
 
 def get_users():
-    selected_cols = [User.email, User.username, User.uuid]
+    selected_cols = [User.email, User.username, User.uuid, User.first_name,  User.last_name, User.photo]
     users = User.select(*selected_cols).dicts().execute()
     return list(users)
 
