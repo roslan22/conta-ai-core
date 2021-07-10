@@ -8,20 +8,9 @@ from db.models import Contract, Paragraph, Sentence
 DEFAULT_DOCUMENT_PATH = "data/rental_contracts/uploaded/95421373-Agreement.pdf.docx"
 
 def get_contract(contract_uuid):
-    #contract = db_conn.Contract.select().join(db_conn.Paragraph).where(
-    #    db_conn.Contract.uuid == contract_uuid)
     contract = Contract.get(Contract.uuid == contract_uuid)
 
     return contract
-
-#def get_contract(db_conn, contract_uuid):
-    #contract = db_conn.Contract.select().join(db_conn.Paragraph).where(
-    #    db_conn.Contract.uuid == contract_uuid)
-#    contract = db_conn.Contract.select(db_conn.Contract, db_conn.Paragraph).join(
-#        db_conn.Paragraph, JOIN.LEFT_OUTER).switch(db_conn.Paragraph).join(db_conn.Sentence, JOIN.LEFT_OUTER).where(
-#                    db_conn.Contract.uuid == contract_uuid)
-#
-#    return contract
 
 def save_contract(user_id, filename, is_template):
     contract_uuid = uuid.uuid4()
@@ -30,7 +19,8 @@ def save_contract(user_id, filename, is_template):
                negative_sentence_amount=2, neutral_sentence_amount=10, 
                positive_sentence_amount=5, 
                status='IN_PROGRESS',
-               name=filename,)
+               name=filename, 
+               description="some description")
 
     contract.save()
 
@@ -54,7 +44,8 @@ def get_contracts(user_id):
         Contract.neutral_sentence_amount,
         Contract.positive_sentence_amount,
         Contract.status,
-        Contract.name).where(Contract.user_id == user_id)
+        Contract.name,
+        Contract.description).where(Contract.user_id == user_id)
         
     return list(contracts)
 
