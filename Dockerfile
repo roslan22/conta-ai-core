@@ -34,12 +34,12 @@ RUN mkdir -p /core
 
 ## Latest conda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-RUN bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /core/miniconda3
-ENV PATH=/core/miniconda3/bin:$PATH
+RUN bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda3
+ENV PATH=/miniconda3/bin:$PATH
 RUN conda update -n base -c defaults conda
 
 #RUN conda init bash
-RUN eval "$(/core/miniconda3/bin/conda shell.bash hook)"
+RUN eval "$(/miniconda3/bin/conda shell.bash hook)"
 
 ## Create the python 3.9.4 conda environment we'll use (mltt does not support higher version)
 RUN conda create --name python39
@@ -54,12 +54,13 @@ COPY requirements-pip.txt /core
 
 ## We now change the PATH setting so python and pip will be picked up from the 'python39�' environment without
 ## activating that environment. This is for our convenience so we don't have to manually activate. 
-ENV PATH=/core/miniconda3/envs/python39/bin:$PATH
+ENV PATH=/miniconda3/envs/python39/bin:$PATH
 
 RUN pip3 install -r /core/requirements-pip.txt --upgrade --no-cache-dir -f https://download.pytorch.org/whl/torch_stable.html
 
 COPY data /core/data/
 
+CMD ["flask", "run", "--host", "0.0.0.0", "--port", "5000"]
 
 ## SSH login fix; otherwise user is kicked off after login:
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
