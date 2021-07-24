@@ -65,11 +65,11 @@ def get_paragraphs(contract_id):
 def get_sentences(contract_id):
     sentences = Sentence.select().join(Paragraph).where(
             Paragraph.contract_id == contract_id).select(
-                Sentence.sentences,
                 Sentence.style, 
                 Sentence.text,
                 Sentence.uuid
             )
+            
     return sentences
 
 def _save_sentences(paragraph_id, text):
