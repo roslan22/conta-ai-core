@@ -27,7 +27,9 @@ def save_contract(user_id, filename, is_template):
     # TODO: CHANGE INTO BULK INSERTS !!!
     paragraphs = exctract_paragraphs(filename)
     for paragraph in paragraphs:
-        paragraph_model = Paragraph(contract=contract, style=paragraph['styles'])
+        paragraph_uuid = uuid.uuid4()
+        paragraph_model = Paragraph(contract=contract, style=paragraph['styles'], 
+                            paragraph_uuid=paragraph_uuid)
         paragraph_model.save()
         _save_sentences(paragraph_id=paragraph_model.id, text=paragraph['text'])
 
@@ -50,16 +52,23 @@ def get_contracts(user_id):
     return list(contracts)
 
 def get_paragraphs(contract_id):
-    paragraphs = Paragraph.select().where(Paragraph.contract_id == contract_id)
+    paragraphs = Paragraph.select().where(
+        Paragraph.contract_id == contract_id).join(Sentence).select(
+            Paragraph.id, 
+            Paragraph.paragraph_uuid, 
+            Paragraph.paragraph_style)
+            
+    # TODO ADD advice and insights
+
     return paragraphs
 
 def get_sentences(contract_id):
     sentences = Sentence.select().join(Paragraph).where(
             Paragraph.contract_id == contract_id).select(
-                Paragraph.id, 
-                Paragraph.style, 
-                Sentence.style,  
-                Sentence.text
+                Sentence.sentences,
+                Sentence.style, 
+                Sentence.text,
+                Sentence.uuid
             )
     return sentences
 
@@ -67,5 +76,6 @@ def _save_sentences(paragraph_id, text):
     sentences = tokenize.sent_tokenize(text)
     
     for sentence in sentences:
-        sentence = Sentence(paragraph=paragraph_id, text=text)
+        sentence_uuid = uuid.uuid4()
+        sentence = Sentence(paragraph=paragraph_id, text=text, uuid=sentence_uuid)
         sentence.save()

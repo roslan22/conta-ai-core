@@ -45,10 +45,12 @@ def paragraph_style_default():
 class Paragraph(BaseModel):
     id = AutoField()
     contract = ForeignKeyField(Contract, backref='paragraphs')
-    style = JSONField(default=paragraph_style_default)
+    paragraph_uuid = UUIDField()
+    paragraph_style = JSONField(default=paragraph_style_default)
 
 class Sentence(BaseModel):
     id = AutoField()
+    uuid = UUIDField()
     paragraph= ForeignKeyField(Paragraph, backref='sentences')
     style = JSONField(default=paragraph_style_default)
     text = TextField()
@@ -56,8 +58,9 @@ class Sentence(BaseModel):
 class Insight(BaseModel):
     id = AutoField()
     sentence= ForeignKeyField(Sentence, backref='insights')
-    text = TextField()
-    match_score = DecimalField()
+    match = TextField()
+    uuid = UUIDField()
+    score = DecimalField()
     match_order = IntegerField(default=0)
     template = BooleanField(default=False)
     template_url = TextField()

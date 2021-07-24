@@ -39,13 +39,23 @@ def hello():
 
 @app.route('/contract/<contract_uuid>')
 def get_contract(contract_uuid): 
-    try:        
+    try:
         contract = contractService.get_contract(contract_uuid)
         #print(contract['Sentence'])
-        paragraphs =  contractService.get_sentences(contract.id)
-        paragraphs = [model_to_dict(paragraph) for paragraph in paragraphs]
+        paragraphs =  contractService.get_paragraphs(contract.id)
+        paragraphs_list = []
+        for paragraph in paragraphs:
+            sentences = [anonimize_sentence(model_to_dict(sentence)) for sentence in paragraph.sentences]
 
-        return {'paragraphs':paragraphs}
+            paragraph = anonimize_paragraph(model_to_dict(paragraph))
+            paragraph["sentences"] = sentences
+            paragraph["advice"] = "TBD"
+            paragraph["insights"] = "TBD"
+
+            paragraphs_list.append(paragraph)
+
+        return {'paragraphs':paragraphs_list}
+
     except Exception as error:
         return Response(error.args[0], status=404, mimetype='application/json')
 
@@ -80,3 +90,17 @@ def get_users():
         return {'all_users':users}
     except Exception as error:
         return Response(error.args[0], status=404, mimetype='application/json')
+
+def anonimize_sentence(sentence_model):
+    print(sentence_model)
+    del sentence_model["paragraph"]
+    del sentence_model["id"]
+
+    return sentence_model
+
+def anonimize_paragraph(paragraph_model):
+    del paragraph_model["contract"]
+    del paragraph_model["id"]
+
+    return paragraph_model
+
