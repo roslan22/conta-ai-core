@@ -11,6 +11,7 @@ from playhouse.shortcuts import model_to_dict, dict_to_model
 from flask import request
 from flask import jsonify
 from containers import Container
+import uuid
 
 #container = Container()
 connDB = connDB.ConnDB()
@@ -45,12 +46,29 @@ def get_contract(contract_uuid):
         paragraphs =  contractService.get_paragraphs(contract.id)
         paragraphs_list = []
         for paragraph in paragraphs:
+            print(f"working on paragraph: {paragraph}")
             sentences = [anonimize_sentence(model_to_dict(sentence)) for sentence in paragraph.sentences]
 
             paragraph = anonimize_paragraph(model_to_dict(paragraph))
             paragraph["sentences"] = sentences
-            paragraph["advice"] = "TBD"
-            paragraph["insights"] = "TBD"
+            paragraph["advice"] = "Some advice about paragraph"
+            paragraph["insights"] = [
+                {
+                    'match': 'matched text to the paragraph',
+                    'score': 0.7,
+                    'template': True,
+                    'templateURL': 'here-will-be-link.com',
+                    'match_order' : 0,
+                    'uuid': uuid.uuid4()
+                },
+                                {
+                    'match': 'second most similar text',
+                    'score': 0.4,
+                    'template': False,
+                    'templateURL': 'here-will-be-link.com',
+                    'match_order' : 1,
+                    'uuid': uuid.uuid4()
+                }]
 
             paragraphs_list.append(paragraph)
 

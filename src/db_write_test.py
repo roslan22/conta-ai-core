@@ -1,6 +1,4 @@
 import nltk
-nltk.download('punkt')
-
 from containers import Container 
 import unittest
 import db
@@ -12,17 +10,22 @@ import sys
 
 DEFAULT_DOCUMENT_PATH = r"/core/data/rental_contracts/test/95421373-Agreement.pdf.docx"
 
-class TestServices(unittest.TestCase):
-    def create_new_user(self):
-        user_template = userService.create_new_user(username='template_test', 
-                                                    password='template123', 
-                                                    email='template@template.com', 
-                                                    is_real=True)
-        return user_template
+def get_user():
+    try:
+        user = userService.get_user(username='template_test')
+    except: 
+        user = userService.create_new_user(username='template_test', 
+                                            password='template123', 
+                                            email='template@template.com', 
+                                            is_real=True)
 
+    return user
+
+
+class TestServices(unittest.TestCase):
     def test_user_addition(self):
         # saving user         
-        user_template = self.create_new_user()
+        user_template = get_user()
 
         # getting user 
         user_retrieved = userService.get_user(username='template_test')
@@ -35,17 +38,14 @@ class TestServices(unittest.TestCase):
         # first we would like to check that contract information stored with
         
         # creating user
-        user_template = self.create_new_user()
+        user_template = get_user()
 
         contract = contractService.save_contract(user_id=user_template.id,
                                     filename=DEFAULT_DOCUMENT_PATH, 
                                     is_template=False)
 
-        user_contracts = contractService.get_contracts(user_id=user_template.id)
+        user_contract = contractService.get_contract(contract.uuid)
 
-        # other properties should be exact
-        self.assertEqual(len(user_contracts), 1)
-        user_contract = user_contracts[0]
         self.assertEqual(user_contract.filename, DEFAULT_DOCUMENT_PATH)
         self.assertEqual(user_contract.is_template, False)
 
@@ -53,16 +53,14 @@ class TestServices(unittest.TestCase):
         # first we would like to check that contract information stored with
         
         # creating user
-        user_template = self.create_new_user()
+        user_template = get_user()
 
         contract = contractService.save_contract(user_id=user_template.id,
                                     filename=DEFAULT_DOCUMENT_PATH, 
                                     is_template=False)
 
-        user_contracts = contractService.get_contracts(user_id=user_template.id)
+        user_contract = contractService.get_contract(contract.uuid)
 
-        self.assertEqual(len(user_contracts), 1)
-        user_contract = user_contracts[0]
         # now all paragraphs should be in paragraph table
         contract_id = user_contract.id 
         paragraphs = contractService.get_paragraphs(contract_id=contract_id)
@@ -73,17 +71,15 @@ class TestServices(unittest.TestCase):
         # first we would like to check that contract information stored with
         
         # creating user
-        user_template = self.create_new_user()
+        user_template = get_user()
 
         contract = contractService.save_contract(user_id=user_template.id,
                                     filename=DEFAULT_DOCUMENT_PATH, 
                                     is_template=False)
 
-        user_contracts = contractService.get_contracts(user_id=user_template.id)
+        user_contract = contractService.get_contract(contract.uuid)
 
         # now all paragraphs should be in paragraph table
-        self.assertEqual(len(user_contracts), 1)
-        user_contract = user_contracts[0]
         contract_id = user_contract.id 
         sentences = contractService.get_sentences(contract_id=contract_id)
 
@@ -104,10 +100,11 @@ if __name__ == '__main__':
     print("In main")
     #container = Container()
     #container.wire(modules=[sys.modules[__name__]])
+    TEST_USER = ''
 
     conn = ConnDB()
     conn.connect_db()
     conn.init_tables()
-
+    
     unittest.main()
     db.close()

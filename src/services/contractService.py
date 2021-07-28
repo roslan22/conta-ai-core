@@ -53,7 +53,7 @@ def get_contracts(user_id):
 
 def get_paragraphs(contract_id):
     paragraphs = Paragraph.select().where(
-        Paragraph.contract_id == contract_id).join(Sentence).select(
+        Paragraph.contract_id == contract_id).select(
             Paragraph.id, 
             Paragraph.paragraph_uuid, 
             Paragraph.paragraph_style)
