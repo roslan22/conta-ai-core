@@ -2,20 +2,26 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(__file__))
 
-from flask import Flask
-from flask import Response
+from flask import Flask, flash, Response, request, redirect, url_for, jsonify
 from services import contractService, userService
 from flask_cors import CORS
 from db import connDB
-from playhouse.shortcuts import model_to_dict, dict_to_model
-from flask import request
-from flask import jsonify
+from playhouse.shortcuts import model_to_dict
 from containers import Container
 import uuid
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = '/tmp'
+ALLOWED_EXTENSIONS = {'docx'}
+
 
 #container = Container()
 connDB = connDB.ConnDB()
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# 32 mb document limit 
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1000 * 1000 
+
 CORS(app, supports_credentials=True)
 
 print("In app")
@@ -97,6 +103,34 @@ def add_user():
         print('user was added')
         resp = jsonify(success=True, user_uuid=user.uuid)
         return resp
+    except Exception as error:
+        return Response(error.args[0], status=404, mimetype='application/json')
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['POST'])
+def upload_document():
+    try:
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            resp = jsonify(success=True)
+            return resp
+            
     except Exception as error:
         return Response(error.args[0], status=404, mimetype='application/json')
 
